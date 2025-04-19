@@ -9,12 +9,12 @@ class MainWindow(QMainWindow):
         self.layout = QVBoxLayout()
         self.container = QWidget()
 
-        self.u_min_input = QLineEdit(self)
-        self.u_max_input = QLineEdit(self)
-        self.samples_input = QLineEdit(self)
-        self.duration_input = QLineEdit(self)
-        self.h_diff_input = QLineEdit(self)
-        self.h_cond_input = QLineEdit(self)
+        self.u_min_input = QLineEdit("1.0", self)
+        self.u_max_input = QLineEdit("10.0", self)
+        self.samples_input = QLineEdit("1000", self)
+        self.duration_input = QLineEdit("0.5", self)
+        self.h_diff_input = QLineEdit("0.1", self)
+        self.h_cond_input = QLineEdit("0.05", self)
 
         self.calc_btn = QPushButton("CALCULATE", self)
 
@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Entropy/Information Speed Calculator")
-        self.setGeometry(1100, 500, 400, 300)
+        self.setGeometry(1100, 400, 400, 300)
         self.setWindowIcon(QIcon("icon.png"))
 
         self.u_min_input.setPlaceholderText("Enter U min (mV)")
@@ -37,12 +37,20 @@ class MainWindow(QMainWindow):
 
         self.calc_btn.clicked.connect(self.perform_calculations)
 
-        self.layout.addWidget(self.u_min_input)
-        self.layout.addWidget(self.u_max_input)
-        self.layout.addWidget(self.samples_input)
-        self.layout.addWidget(self.duration_input)
-        self.layout.addWidget(self.h_diff_input)
-        self.layout.addWidget(self.h_cond_input)
+        widgets = [
+            (QLabel("U min (mV):"), self.u_min_input),
+            (QLabel("U max (mV):"), self.u_max_input),
+            (QLabel("Samples count:"), self.samples_input),
+            (QLabel("Message duration (s):"), self.duration_input),
+            (QLabel("Differential entropy (bits/sample):"), self.h_diff_input),
+            (QLabel("Conditional differential entropy (bits/sample):"), self.h_cond_input),
+        ]
+
+        for label, lineedit in widgets:
+            self.layout.addWidget(label)
+            self.layout.addWidget(lineedit)
+            self.layout.addSpacing(5)
+
         self.layout.addWidget(self.calc_btn)
         self.layout.addWidget(self.entropy_result)
         self.layout.addWidget(self.info_speed_result)
@@ -51,37 +59,38 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.container)
 
         self.setStyleSheet("""
-                    QLineEdit {
-                        font-size: 14px;
-                        padding: 6px;
-                        border: 2px solid #444;
-                        border-radius: 5px;
-                        background-color: #ffffff;
-                        font-family: Helvetica;
-                    }
-                    QLabel {
-                        font-size: 16px;
-                        font-weight: bold;
-                        font-family: Helvetica;
-                    }
-                    QPushButton {
-                        font-size: 16px;
-                        font-weight: bold;
-                        background-color: #3ac45e;
-                        border: none;
-                        padding: 12px;
-                        color: white;
-                        font-family: Helvetica;
-                        border-radius: 8px;
-                    }
-                    QPushButton:hover {
-                        background-color: #34b155;
-                    }
-                    QWidget {
-                        background-color: #d3d7d4;
-                        font-family: Helvetica;
-                    }
-                """)
+            QLineEdit {
+                font-size: 14px;
+                padding: 6px;
+                border: 2px solid #444;
+                border-radius: 5px;
+                background-color: #ffffff;
+                font-family: Helvetica;
+            }
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                font-family: Helvetica;
+            }
+            QPushButton {
+                font-size: 16px;
+                font-weight: bold;
+                background-color: #3ac45e;
+                border: none;
+                padding: 12px;
+                color: white;
+                font-family: Helvetica;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #34b155;
+            }
+            QWidget {
+                background-color: #d3d7d4;
+                font-family: Helvetica;
+            }
+        """)
+
 
     def perform_calculations(self):
         try:
